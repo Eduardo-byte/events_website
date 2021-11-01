@@ -1,0 +1,38 @@
+{% extends 'events/base.html' %}
+
+{% block content %} 
+    <div class="row">
+        <div class="col-lg-3">   
+        </div>
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <strong> Venue </strong>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ venue.name }} </h5>
+                    <p class="card-text">
+                        <ul>
+                            <li>Address: {{ venue.address }}</li>
+                            <li>Post Code: {{ venue.post_code }}</li>
+                            <li>Phone: {{ venue.phone }}</li>
+                            <li>Website: <a href="{{ venue.web }}">{{ venue.web }}</a></li>
+                            <li>Email:  {{ venue.email_address }}</li>
+                            <li>Events for this venue:</li>
+                            {% if count == 0 %}
+                                - No events for this Venue
+                            {% else %} 
+                                {% for event in event_from_venue %}
+                                    <a href="{% url 'show-event' event.id %}"> - {{event}} </a></br>
+                                {% endfor %}
+                            {% endif %}
+                            <a href=" {% url 'update-venue' venue.id %} " class="btn btn-outline-secondary btn-sm">Update</a>
+                        </ul>
+                    </p>   
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">   
+        </div>
+    </div> 
+{% endblock %}

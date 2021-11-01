@@ -1,0 +1,29 @@
+{% extends 'events/base.html' %}
+{% load static %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-lg-3">   
+        </div>
+        <div class="col-lg-6">
+            {% if submitted %}
+                <div class="alert alert-success" role="alert">
+                    Form submitted successfully.
+                </div>
+                <a href="{% url 'add-event' %}" class="btn btn-secondary btn-lg " role="button" >create a new event</a>
+                <a href="{% url 'list-events' %}" class="btn btn-primary btn-lg " role="button" >Show all Events</a>
+            {% else %}
+                <h1>Add an Event to Database</h1>
+                </br></br>
+                <form action="" method=POST>
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <input type="submit" value="Submit" class="btn btn-secondary">
+                </form>
+            {% endif %}   
+        </div>
+        <div class="col-lg-3">   
+        </div>
+    </div>
+{% endblock %}

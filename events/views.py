@@ -100,6 +100,11 @@ def update_venue(request, venue_id):
         'form': form,
         })
 
+def delete_venue(request, venue_id):
+    venue = Venue.objects.get(pk=venue_id)
+    venue.delete()
+    return redirect('list-venues')
+
 def add_event(request):
     submitted = False
     if request.method == "POST":
@@ -147,6 +152,11 @@ def update_event(request, event_id):
         'event': event,
         'form': form,
         })
+
+def delete_event(request, event_id):
+    event = Event.objects.get(pk=event_id)
+    event.delete()
+    return redirect('list-events')
 
 def home(request, year=datetime.now().year, month=datetime.now().strftime('%B')):
     name = "Eduardo"

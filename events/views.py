@@ -32,12 +32,37 @@ def add_venue(request):
         })
 
 def list_venues(request):
-    venue_list = Venue.objects.all()
-    return render(request,
-        'events/venues.html',
-        {
-        'venue_list': venue_list,    
-        })
+    name = False
+    address = False
+    if 'name' in request.GET:
+        name = True
+        venue_list = Venue.objects.all().order_by('name')
+        return render(request,
+            'events/venues.html',
+            {
+            'venue_list': venue_list, 
+            'name': name,
+            'address': address,   
+            })
+    elif 'address' in request.GET:
+        address = True
+        venue_list = Venue.objects.all().order_by('address')
+        return render(request,
+            'events/venues.html',
+            {
+            'venue_list': venue_list, 
+            'name': name,
+            'address': address,  
+            })
+    else:
+        venue_list = Venue.objects.all().order_by('?')
+        return render(request,
+            'events/venues.html',
+            {
+            'venue_list': venue_list,
+            'name': name,
+            'address': address,    
+            })
 
 def show_venue(request, venue_id):
     venue = Venue.objects.get(pk=venue_id)
@@ -47,9 +72,12 @@ def show_venue(request, venue_id):
     for event in event_list:
         if count == 0:
             count = 0
-        if event.venue.name == venue.name:
-            count += 1
-            event_from_venue.append(event)
+        if event.venue == None:
+            count = 0
+        else:
+            if event.venue.name == venue.name:
+                count += 1
+                event_from_venue.append(event)
     return render(request, 
         'events/show_venue.html', 
         {
@@ -62,7 +90,7 @@ def search_venues(request):
     if request.method == "POST":
         contains = False
         searched = request.POST['searched']
-        venues = Venue.objects.filter(name__contains=searched)
+        venues = Venue.objects.filter(address__contains=searched)
         if venues:
             contains = True
             return render(request, 
@@ -124,7 +152,7 @@ def add_event(request):
         })
 
 def all_events(request):
-    event_list = Event.objects.all()
+    event_list = Event.objects.all().order_by('name')
     
     return render(request, 
         'events/event_list.html', 

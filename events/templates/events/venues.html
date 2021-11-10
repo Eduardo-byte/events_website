@@ -3,6 +3,41 @@
 {% block content %}
     <center>
         <h1>Venues...</h1></br>
+        {% if name %}
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link">Order by:</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{% url 'list-venues' %}?name">Name</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'list-venues' %}?address">Address</a>
+                </li>
+            </ul>
+        {% elif address %}
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link">Order by:</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="{% url 'list-venues' %}?name">Name</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'list-venues' %}?address">Address</a>
+                </li>
+            </ul>
+        {% else %}
+        <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="{% url 'list-venues' %}?name">Name</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'list-venues' %}?address">Address</a>
+                </li>
+            </ul>
+        {% endif %} 
+        </br>
         <table class="table table-hover table-striped table-bordered">
             {% for venue in venue_list %}
             <tr>

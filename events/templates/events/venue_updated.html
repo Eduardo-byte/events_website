@@ -1,0 +1,16 @@
+{% extends 'events/base.html' %}
+
+{% block content %}
+    {% if updated %}
+        <div class="alert alert-success" role="alert">
+            Venue updated successfully.
+        </div>
+        <a href="{% url 'list-venues' %}" class="btn btn-primary btn-lg " role="button" >Show all Venues</a>
+    {% else %}
+        <div class="alert alert-danger" role="alert">
+            Nothing to update
+        </div>
+        <a href="{% url 'list-venues' %}" class="btn btn-primary btn-lg " role="button" >Show all Venues</a>
+    {% endif %}
+    
+{% endblock %}

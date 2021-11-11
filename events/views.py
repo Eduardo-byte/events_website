@@ -114,13 +114,24 @@ def search_venues(request):
             'events/search_venues.html', 
             {
             })
-
+def venue_updated(request):
+    updated = False
+    if 'updated' in request.GET:
+        updated= True
+    else:
+        updated= False
+    return render(request, 
+        'events/venue_updated.html', 
+        {
+        'updated': updated,
+        })
 def update_venue(request, venue_id):
     venue = Venue.objects.get(pk=venue_id)
     form = VenueForm(request.POST or None, instance=venue)
     if form.is_valid():
         form.save()
-        return redirect('list-venues')
+        return HttpResponseRedirect('/venue_updated?updated')
+        #return redirect('list-venues')
     return render(request, 
         'events/update_venue.html', 
         {

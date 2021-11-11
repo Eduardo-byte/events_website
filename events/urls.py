@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, re_path
 from . import views
 
 urlpatterns = [
@@ -20,6 +20,7 @@ urlpatterns = [
     path('list_venues', views.list_venues, name="list-venues"), 
     path('show_venue/<venue_id>', views.show_venue, name="show-venue"), 
     path('update_venue/<venue_id>', views.update_venue, name="update-venue"),
+    path('venue_updated', views.venue_updated, name="venue-updated"),
     path('search_venues', views.search_venues, name="search-venues"), 
     path('delete_venue/<venue_id>', views.delete_venue, name="delete-venue"),
     ]

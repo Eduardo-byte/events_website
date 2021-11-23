@@ -5,12 +5,34 @@ from datetime import datetime
 #from time import gmtime, strftime
 from .models import Event, Venue
 from .forms import VenueForm, EventForm
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 
 # Create your views here.
 # to pass the variables/the content to be used on the html file you always need to : 
 #or import from another file, like from .forms import VenueForm, and then on the context dictionary pass it when calling the html file.
 #the same with variables, create them on the def view and pass them on the dictionary.
+
+#Generate text file Venues List
+def venue_text(request):
+    response = HttpResponse(content_type='text/plain')
+    response['Content-Disposition'] = 'attachment; filename=venues.txt'
+    
+    #Designate the model
+    venues = Venue.objects.all()
+    
+    #Create blank list
+    lines = []
+    
+    #Loop through and output
+    for venue in venues:
+        lines.append(f'Venue: {venue.name}\nAddress: {venue.address}\nPhone: {venue.phone}\nPost-code: {venue.post_code}\nEmail: {venue.email_address}\nWebsite: {venue.web}\n\n\n')
+        
+    
+    #lines = ["this is line 1 \n" , "this is line 2 \n" , "this is lie 3 \n\n" , "Eduardo is awesome! \n"]
+    
+    #Write to TextFile
+    response.writelines(lines)
+    return response
 
 def add_venue(request):
     submitted = False
@@ -90,7 +112,7 @@ def search_venues(request):
     if request.method == "POST":
         contains = False
         searched = request.POST['searched']
-        venues = Venue.objects.filter(address__contains=searched)
+        venues = Venue.objects.filter(name__contains=searched)
         if venues:
             contains = True
             return render(request, 
@@ -114,6 +136,7 @@ def search_venues(request):
             'events/search_venues.html', 
             {
             })
+        
 def venue_updated(request):
     updated = False
     if 'updated' in request.GET:
@@ -125,6 +148,7 @@ def venue_updated(request):
         {
         'updated': updated,
         })
+    
 def update_venue(request, venue_id):
     venue = Venue.objects.get(pk=venue_id)
     form = VenueForm(request.POST or None, instance=venue)

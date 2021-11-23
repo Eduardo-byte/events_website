@@ -23,4 +23,5 @@ urlpatterns = [
     path('venue_updated', views.venue_updated, name="venue-updated"),
     path('search_venues', views.search_venues, name="search-venues"), 
     path('delete_venue/<venue_id>', views.delete_venue, name="delete-venue"),
+    path('venue_text', views.venue_text, name='venue-text'),
     ]

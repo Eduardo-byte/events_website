@@ -24,4 +24,5 @@ urlpatterns = [
     path('search_venues', views.search_venues, name="search-venues"), 
     path('delete_venue/<venue_id>', views.delete_venue, name="delete-venue"),
     path('venue_text', views.venue_text, name='venue-text'),
+    path('venue_csv', views.venue_csv, name='venue-csv'),
     ]

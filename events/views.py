@@ -6,6 +6,7 @@ from datetime import datetime
 from .models import Event, Venue
 from .forms import VenueForm, EventForm
 from django.http import HttpResponseRedirect, HttpResponse
+import csv
 
 # Create your views here.
 # to pass the variables/the content to be used on the html file you always need to : 
@@ -32,6 +33,26 @@ def venue_text(request):
     
     #Write to TextFile
     response.writelines(lines)
+    return response
+
+#Generate CSV/Excel file Venues List
+def venue_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=venues.csv'
+    
+    #Create a csv writer
+    writer = csv.writer(response)
+    
+    #Designate the model
+    venues = Venue.objects.all()
+    
+    #add column headings to csv file
+    writer.writerow(['Venue Name' , 'Address' , 'Post code' , 'Phone' , 'Email' , 'Web address'])
+
+    #Loop through and output
+    for venue in venues:
+        writer.writerow([venue.name , venue.address , venue.post_code ,  venue.phone, venue.email_address , venue.web])
+        
     return response
 
 def add_venue(request):

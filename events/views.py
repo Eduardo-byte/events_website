@@ -8,6 +8,14 @@ from .forms import VenueForm, EventForm
 from django.http import HttpResponseRedirect, HttpResponse
 import csv
 
+from django.http import FileResponse
+import io
+from reportlab.pdfgen import canvas
+from reportlab.lib.units import inch
+from reportlab.lib.pagesizes import letter
+
+
+
 # Create your views here.
 # to pass the variables/the content to be used on the html file you always need to : 
 #or import from another file, like from .forms import VenueForm, and then on the context dictionary pass it when calling the html file.
@@ -35,6 +43,51 @@ def venue_text(request):
     response.writelines(lines)
     return response
 
+
+#Generate PDF file Venues List
+def venue_pdf(request):
+    #create a Bytestream buffer
+    buf = io.BytesIO()
+    
+    #create a canvas
+    c = canvas.Canvas(buf, pagesize=letter, bottomup=0)
+    
+    #create a text object
+    textob = c.beginText()
+    textob.setTextOrigin(inch, inch)
+    textob.setFont("Helvetica", 14)
+    
+    #Designate the model
+    venues = Venue.objects.all()
+    
+    #Create blank list
+    lines = []
+    
+    #Loop through and output
+    for venue in venues:
+        lines.append(f'Venue: {venue.name}')
+        lines.append(f'Address: {venue.address}')
+        lines.append(f'Post Code: {venue.post_code}')
+        lines.append(f'Phone Number: {venue.phone}')
+        lines.append(f'Email Address: {venue.email_address}')
+        lines.append(f'Web Site: {venue.web}')
+        lines.append(" ")
+        
+        
+    #loop thorugh the array lines and write to the pdf
+    for line in lines:
+        textob.textLine(line)
+    
+    #finish up
+    c.drawText(textob)
+    c.showPage()
+    c.save()
+    buf.seek(0)
+    
+    #return something
+    return FileResponse(buf, as_attachment=True, filename="venues.pdf")
+    
+    
 #Generate CSV/Excel file Venues List
 def venue_csv(request):
     response = HttpResponse(content_type='text/csv')
@@ -241,6 +294,7 @@ def delete_event(request, event_id):
     event = Event.objects.get(pk=event_id)
     event.delete()
     return redirect('list-events')
+
 
 def home(request, year=datetime.now().year, month=datetime.now().strftime('%B')):
     name = "Eduardo"

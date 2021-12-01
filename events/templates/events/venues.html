@@ -69,7 +69,7 @@
         </table>
     </center> 
     </br></br>
-    
+
     <!--
     {{ venues }}
     </br>
@@ -84,16 +84,29 @@
 
     <hr></br></br>
 
-    {% if venues.has_previous %}
-        <a href="?page=1">&laquo First </a> &nbsp;
-        <a href="?page={{ venues.previous_page_number }}"> Previous </a>&nbsp;
-    {% endif %}
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            {% if venues.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page=1">&laquo First </a></li> &nbsp;
+                <li class="page-item"><a class="page-link" href="?page={{ venues.previous_page_number }}"> Previous </a></li> &nbsp;
+            {% else %}
+                <li class="page-item disabled"><a class="page-link" href="#">&laquo First </a></li> &nbsp;
+                <li class="page-item disabled"><a class="page-link" href="#"> Previous </a></li> &nbsp;
+            {% endif %}
 
-    Page {{ venues.number }} of {{ venues.paginator.num_pages }}&nbsp;
+            {% for i in nums  %}
+                <li class="page-item"><a href="?page={{forloop.counter}}" class="page-link"> {{ forloop.counter }} </a></li>
+            {% endfor %}
+            <!--<li class="page-item disabled"><a href="#" class="page-link">Page {{ venues.number }} of {{ venues.paginator.num_pages }}</a></li> &nbsp;-->
+            
 
-    {% if venues.has_next %}
-        <a href="?page={{ venues.next_page_number }}">Next</a> &nbsp;
-        <a href="?page={{ venues.paginator.num_pages }}"> Last &raquo </a>&nbsp;
-    {% endif %}
-
+            {% if venues.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ venues.next_page_number }}">Next</a></li> &nbsp;
+                <li class="page-item"><a class="page-link" href="?page={{ venues.paginator.num_pages }}"> Last &raquo </a></li> &nbsp;
+            {% else %}
+                <li class="page-item disabled"><a class="page-link" href="#">Next</a></li> &nbsp;
+                <li class="page-item disabled"><a class="page-link" href="#"> Last &raquo </a></li> &nbsp;
+            {% endif %}
+        </ul>
+    </nav>
 {% endblock %}

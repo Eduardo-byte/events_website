@@ -140,6 +140,7 @@ def list_venues(request):
         p = Paginator(Venue.objects.all().order_by('name'), 2)
         page = request.GET.get('page')
         venues = p.get_page(page)
+        nums = "a" * venues.paginator.num_pages
         
         return render(request,
             'events/venues.html',
@@ -147,7 +148,8 @@ def list_venues(request):
             'venue_list': venue_list,
             'venues': venues,
             'name': name,
-            'address': address,    
+            'address': address,
+            'nums': nums,    
             })
     elif 'address' in request.GET:
         address = True
@@ -156,6 +158,7 @@ def list_venues(request):
         p = Paginator(Venue.objects.all().order_by('address'), 2)
         page = request.GET.get('page')
         venues = p.get_page(page)
+        nums = "a" * venues.paginator.num_pages
         
         return render(request,
             'events/venues.html',
@@ -163,7 +166,8 @@ def list_venues(request):
             'venue_list': venue_list,
             'venues': venues,
             'name': name,
-            'address': address,    
+            'address': address,
+            'nums': nums,    
             })
     else:
         #venue_list = Venue.objects.all().order_by('?')
@@ -173,6 +177,7 @@ def list_venues(request):
         p = Paginator(Venue.objects.all().order_by('name'), 2)
         page = request.GET.get('page')
         venues = p.get_page(page)
+        nums = "a" * venues.paginator.num_pages
         
         return render(request,
             'events/venues.html',
@@ -180,7 +185,8 @@ def list_venues(request):
             'venue_list': venue_list,
             'venues': venues,
             'name': name,
-            'address': address,    
+            'address': address,
+            'nums': nums,    
             })
 
 def show_venue(request, venue_id):

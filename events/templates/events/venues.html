@@ -9,10 +9,10 @@
                     <a class="nav-link">Order by:</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{% url 'list-venues' %}?name">Name</a>
+                    <a class="nav-link active" aria-current="page" href="{% url 'list-venues' %}?page={{ venues.number }}&name">Name</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'list-venues' %}?address">Address</a>
+                    <a class="nav-link" href="{% url 'list-venues' %}?page={{ venues.number }}&address">Address</a>
                 </li>
             </ul>
         {% elif address %}
@@ -21,10 +21,10 @@
                     <a class="nav-link">Order by:</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" aria-current="page" href="{% url 'list-venues' %}?name">Name</a>
+                    <a class="nav-link" aria-current="page" href="{% url 'list-venues' %}?page={{ venues.number }}&name">Name</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="{% url 'list-venues' %}?address">Address</a>
+                    <a class="nav-link active" href="{% url 'list-venues' %}?page={{ venues.number }}&address">Address</a>
                 </li>
             </ul>
         {% else %}
@@ -33,16 +33,28 @@
                     <a class="nav-link">Order by:</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" aria-current="page" href="{% url 'list-venues' %}?name">Name</a>
+                    <a class="nav-link" aria-current="page" href="{% url 'list-venues' %}?page={{ venues.number }}&name">Name</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'list-venues' %}?address">Address</a>
+                    <a class="nav-link" href="{% url 'list-venues' %}?page={{ venues.number }}&address">Address</a>
                 </li>
             </ul>
         {% endif %} 
         </br>
         <table class="table table-hover table-striped table-bordered">
-            {% for venue in venue_list %}
+            
+            {% comment %} {% for venue in venue_list %}
+            <tr>
+                <td>
+                    <a href="{% url 'show-venue' venue.id %}"> {{venue}} </a> </br>
+                </td>
+                <td align="right">
+                    <a href=" {% url 'update-venue' venue.id %} " class="btn btn-outline-secondary btn-sm">Update</a>
+                    <a href=" {% url 'delete-venue' venue.id %} " class="btn btn-outline-danger btn-sm">Delete</a>
+                </td>
+            </tr> {% endcomment %}
+
+            {% for venue in venues %}
             <tr>
                 <td>
                     <a href="{% url 'show-venue' venue.id %}"> {{venue}} </a> </br>
@@ -52,7 +64,36 @@
                     <a href=" {% url 'delete-venue' venue.id %} " class="btn btn-outline-danger btn-sm">Delete</a>
                 </td>
             </tr>
+
             {% endfor %}
         </table>
     </center> 
+    </br></br>
+    
+    <!--
+    {{ venues }}
+    </br>
+    Has Previous: {{ venues.has_previous }} 
+    </br>
+    Has Next: {{ venues.has_next }}
+    </br>
+    Current Page: {{ venues.number }}
+    </br>
+    Number of pages: {{ venues.paginator.num_pages }}
+    -->
+
+    <hr></br></br>
+
+    {% if venues.has_previous %}
+        <a href="?page=1">&laquo First </a> &nbsp;
+        <a href="?page={{ venues.previous_page_number }}"> Previous </a>&nbsp;
+    {% endif %}
+
+    Page {{ venues.number }} of {{ venues.paginator.num_pages }}&nbsp;
+
+    {% if venues.has_next %}
+        <a href="?page={{ venues.next_page_number }}">Next</a> &nbsp;
+        <a href="?page={{ venues.paginator.num_pages }}"> Last &raquo </a>&nbsp;
+    {% endif %}
+
 {% endblock %}

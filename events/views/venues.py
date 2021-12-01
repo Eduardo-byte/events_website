@@ -14,6 +14,9 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.units import inch
 from reportlab.lib.pagesizes import letter
 
+#import pagination stuff
+from django.core.paginator import Paginator
+
 
 
 # Create your views here.
@@ -133,29 +136,49 @@ def list_venues(request):
     if 'name' in request.GET:
         name = True
         venue_list = Venue.objects.all().order_by('name')
-        return render(request,
-            'events/venues.html',
-            {
-            'venue_list': venue_list, 
-            'name': name,
-            'address': address,   
-            })
-    elif 'address' in request.GET:
-        address = True
-        venue_list = Venue.objects.all().order_by('address')
-        return render(request,
-            'events/venues.html',
-            {
-            'venue_list': venue_list, 
-            'name': name,
-            'address': address,  
-            })
-    else:
-        venue_list = Venue.objects.all().order_by('?')
+        
+        p = Paginator(Venue.objects.all().order_by('name'), 2)
+        page = request.GET.get('page')
+        venues = p.get_page(page)
+        
         return render(request,
             'events/venues.html',
             {
             'venue_list': venue_list,
+            'venues': venues,
+            'name': name,
+            'address': address,    
+            })
+    elif 'address' in request.GET:
+        address = True
+        venue_list = Venue.objects.all().order_by('address')
+        
+        p = Paginator(Venue.objects.all().order_by('address'), 2)
+        page = request.GET.get('page')
+        venues = p.get_page(page)
+        
+        return render(request,
+            'events/venues.html',
+            {
+            'venue_list': venue_list,
+            'venues': venues,
+            'name': name,
+            'address': address,    
+            })
+    else:
+        #venue_list = Venue.objects.all().order_by('?')
+        venue_list = Venue.objects.all().order_by('name')
+        
+        #set up pagination
+        p = Paginator(Venue.objects.all().order_by('name'), 2)
+        page = request.GET.get('page')
+        venues = p.get_page(page)
+        
+        return render(request,
+            'events/venues.html',
+            {
+            'venue_list': venue_list,
+            'venues': venues,
             'name': name,
             'address': address,    
             })

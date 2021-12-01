@@ -13,6 +13,8 @@ import io
 from reportlab.pdfgen import canvas
 from reportlab.lib.units import inch
 from reportlab.lib.pagesizes import letter
+#import pagination stuff
+from django.core.paginator import Paginator
 
 
 def add_event(request):
@@ -36,10 +38,17 @@ def add_event(request):
 def all_events(request):
     event_list = Event.objects.all().order_by('name')
     
+    p = Paginator(Event.objects.all().order_by('name'), 2)
+    page = request.GET.get('page')
+    events = p.get_page(page)
+    nums = "a" * events.paginator.num_pages
+    
     return render(request, 
         'events/event_list.html', 
         {
         'event_list': event_list,
+        'events': events,
+        'nums': nums,
         })
 
 def show_event(request, event_id):

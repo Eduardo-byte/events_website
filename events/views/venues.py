@@ -243,7 +243,7 @@ def search_venues(request):
 def venue_updated(request):
     updated = False
     if 'updated' in request.GET:
-        updated= True
+        updated = True
     else:
         updated= False
     return render(request, 

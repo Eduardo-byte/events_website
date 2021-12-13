@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-
+{% if request.user.is_authenticated %}
     <div class="row">
         <div class="col-lg-3">   
         </div>
@@ -26,4 +26,8 @@
         <div class="col-lg-3">   
         </div>
     </div>
+{% else %}
+    <h1>Sorry!! You must be Logged in to view this page</h1>
+    <a href="{% url 'login' %}">Login Here</a>
+{% endif %}
 {% endblock %}

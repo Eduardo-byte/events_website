@@ -1,6 +1,9 @@
 from django.shortcuts import render, redirect 
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib import messages
+from django.contrib.auth.forms import UserCreationForm
+from .forms import RegisterUserForm
+from events .forms import MyClubUserForm
 
 def login_user(request):
     
@@ -8,13 +11,23 @@ def login_user(request):
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(request, username=username, password=password)
+        user_check = get_user_model().objects.filter(username=username).first()
         if user is not None:
             login(request, user)
             return redirect('home')            
         else:
+            if user_check is None:
+                messages.success(request, ("Username not registered"))
+                return redirect('login')
+            elif not user_check.is_active:
+                messages.success(request, ("User not active"))
+                return redirect('login')
+            else:
+                messages.success(request, ("incorrect password"))
+                return redirect('login')
             # Return an 'invalid login' error message.
-            messages.success(request, ("There was an error logging in, Try again... "))
-            return redirect('login')  
+            #messages.success(request, ("There was an error logging in, Try again... "))
+            #return redirect('login')  
         
     else:
         return render(request, 
@@ -32,3 +45,36 @@ def logout_user(request):
     #     {
                 
     #     })
+    
+
+def register_user(request):
+    if request.method == "POST":
+        form = RegisterUserForm(request.POST)
+        myclub = MyClubUserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password1']
+            user = authenticate(username=username, password=password)
+            login(request, user)
+            messages.success(request, (" Registered successfull "))
+            myclub.username = form.cleaned_data['username']
+            myclub.first_name = form.cleaned_data['first_name']
+            myclub.last_name = form.cleaned_data['last_name']
+            myclub.email = form.cleaned_data['email']
+            myclub.password1 = form.cleaned_data['password1']
+            myclub.password2 = form.cleaned_data['password2']
+            stock = myclub.save(commit=False)
+            stock.id = user.id
+            stock.save()
+            
+            return redirect('home')
+    else:
+        form = RegisterUserForm()
+        
+    return render(request, 
+    'authenticate/register.html', 
+        {
+        'form':form     
+        })
+

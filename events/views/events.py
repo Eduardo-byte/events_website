@@ -7,6 +7,7 @@ from ..models import Event, Venue
 from ..forms import VenueForm, EventForm
 from django.http import HttpResponseRedirect, HttpResponse
 import csv
+from django.contrib import messages
 
 from django.http import FileResponse
 import io
@@ -16,13 +17,19 @@ from reportlab.lib.pagesizes import letter
 #import pagination stuff
 from django.core.paginator import Paginator
 
+from django.contrib.auth import get_user_model
 
 def add_event(request):
     submitted = False
+    user = request.user
     if request.method == "POST":
         form = EventForm(request.POST)
         if form.is_valid():
-            form.save()
+            stock = form.save(commit=False)
+            stock.manager = request.user
+            stock.save()
+            #form.fields['manager'] = user
+            #form.save()
             return HttpResponseRedirect('/add_event?submitted=True')
     else:
         form = EventForm
@@ -64,6 +71,7 @@ def update_event(request, event_id):
     form = EventForm(request.POST or None, instance=event)
     if form.is_valid():
         form.save()
+        messages.success(request, (" Event Updated successfully "))
         return redirect('list-events')
     return render(request, 
         'events/update_event.html', 
@@ -74,5 +82,34 @@ def update_event(request, event_id):
 
 def delete_event(request, event_id):
     event = Event.objects.get(pk=event_id)
-    event.delete()
-    return redirect('list-events')
+    user = request.user
+    manag = event.manager
+    if request.user.is_authenticated:
+        if user == manag:
+            event.delete()
+            messages.success(request, (" Event deleted successfully "))
+            return redirect('list-events')
+        else:
+            messages.success(request, (" You don't have permissions to delete events "))
+            return redirect('list-events')
+
+def regist_user_event(request, event_id):
+    event = Event.objects.get(pk=event_id)
+    attendees_event = event.attendees.all()
+    user = request.user
+    registered = False
+    for i in event.attendees.all():   
+        if i.id == user.id:
+            registered = True
+        else:
+            registered = False
+    if registered:
+        messages.success(request, (" you already registered "))
+        return redirect('list-events')
+    elif request.user.is_authenticated:
+        messages.success(request, (" Registered for the event successfully "))
+        event.attendees.add(str(user.id))
+        return redirect('list-events')
+    else:
+        messages.success(request, (" You don't have permissions to regist events "))
+        return redirect('list-events')

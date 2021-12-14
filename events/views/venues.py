@@ -4,10 +4,12 @@ from calendar import HTMLCalendar
 from datetime import datetime
 #from time import gmtime, strftime
 from ..models import Event, Venue
+from django.contrib.auth.models import User
 from ..forms import VenueForm, EventForm
 from django.http import HttpResponseRedirect, HttpResponse
 import csv
 
+from django.contrib import messages
 from django.http import FileResponse
 import io
 from reportlab.pdfgen import canvas
@@ -194,6 +196,7 @@ def list_venues(request):
 
 def show_venue(request, venue_id):
     venue = Venue.objects.get(pk=venue_id)
+    venue_owner = User.objects.get(pk=venue.owner)
     event_list = Event.objects.all()
     count = 0
     event_from_venue = []
@@ -212,6 +215,7 @@ def show_venue(request, venue_id):
         'venue': venue,
         'event_from_venue': event_from_venue,
         'count': count,
+        'venue_owner': venue_owner,
         })
 
 def search_venues(request):
@@ -271,5 +275,15 @@ def update_venue(request, venue_id):
 
 def delete_venue(request, venue_id):
     venue = Venue.objects.get(pk=venue_id)
-    venue.delete()
-    return redirect('list-venues')
+    user = request.user
+    if request.user.is_authenticated:
+        if user.id == venue.owner:
+            venue.delete()
+            messages.success(request, (" Deleted "))
+            return redirect('list-venues')
+        else:
+            messages.success(request, (" You don't have permissions to delete this event "))
+            return redirect('list-venues')
+    else:
+            messages.success(request, (" You don't have permissions to delete events "))
+            return redirect('list-venues')

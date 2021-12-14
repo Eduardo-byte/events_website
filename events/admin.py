@@ -5,6 +5,10 @@ from .models import Event
 
 #admin.site.register(Venue)
 admin.site.register(MyClubUser)
+class MyClubUserAdmin(admin.ModelAdmin):
+    fields = ('username', 'first_name', 'last_name', 'email','password1', 'password2',)
+    # exclude = ['password1', 'password2',]    
+    
 #admin.site.register(Event)
 
 @admin.register(Venue)
@@ -19,3 +23,5 @@ class EventAdmin(admin.ModelAdmin):
     list_display = ('name', 'event_date', 'venue',)
     list_filter = ('event_date', 'venue',)
     ordering = ('event_date',)
+
+

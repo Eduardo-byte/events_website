@@ -18,6 +18,7 @@
                             <li>Phone: {{ venue.phone }}</li>
                             <li>Website: <a href="{{ venue.web }}">{{ venue.web }}</a></li>
                             <li>Email:  {{ venue.email_address }}</li>
+                            <li>Owner: {{ venue_owner.email }}</li>
                             <li>Events for this venue:</li>
                             {% if count == 0 %}
                                 - No events for this Venue
@@ -27,7 +28,9 @@
                                 {% endfor %}
                             {% endif %}
                             {% if request.user.is_authenticated %}
-                                <a href=" {% url 'update-venue' venue.id %} " class="btn btn-outline-secondary btn-sm">Update</a>
+                                {% if user.id == venue.owner %}
+                                    <a href=" {% url 'update-venue' venue.id %} " class="btn btn-outline-secondary btn-sm">Update</a>
+                                {% endif %}
                             {% endif %}
                         </ul>
                     </p>   

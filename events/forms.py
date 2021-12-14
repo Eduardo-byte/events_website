@@ -50,6 +50,11 @@ class MyClubUserForm(ModelForm):
     class Meta:
         model = MyClubUser
         fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2' )
+        widgets = {
+            'password1': forms.PasswordInput(),
+            'password2': forms.PasswordInput(),
+        }
+        # exclude = ["password1"]
         
         
 

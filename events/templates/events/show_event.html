@@ -16,10 +16,15 @@
                             <li>Manager: {{ event.manager }}</li>
                             <li>Description: {{ event.description }}</li>
                             <li>Attendes: </br>
-                            {%for user in event.attendees.all%}
+                            {% for user in event.attendees.all %}
                                 - {{ user }} </br>
                             {% endfor %}
                         </ul>
+                        {% if request.user.is_authenticated %}
+                            {% if user == event.manager %}
+                                <a href=" {% url 'update-event' event.id %} " class="btn btn-outline-secondary btn-sm">Update</a>
+                            {% endif %}
+                        {% endif %}
                     </p>   
                 </div>
             </div>

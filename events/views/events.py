@@ -19,6 +19,20 @@ from django.core.paginator import Paginator
 
 from django.contrib.auth import get_user_model
 
+
+def my_events(request):
+    if request.user.is_authenticated:
+        events = Event.objects.filter(attendees = request.user.id)
+        return render(request, 
+        'events/my_events.html', 
+        {
+        'events': events
+        })
+    else:
+        messages.success(request, (" You need to be be looged in "))
+        return redirect('list-events')
+
+
 def add_event(request):
     submitted = False
     user = request.user
@@ -43,20 +57,47 @@ def add_event(request):
         })
 
 def all_events(request):
-    event_list = Event.objects.all().order_by('name')
-    
-    p = Paginator(Event.objects.all().order_by('name'), 2)
-    page = request.GET.get('page')
-    events = p.get_page(page)
-    nums = "a" * events.paginator.num_pages
-    
-    return render(request, 
-        'events/event_list.html', 
-        {
-        'event_list': event_list,
-        'events': events,
-        'nums': nums,
-        })
+    if request.method == "POST":
+        contains = False
+        clicked = True
+        searched = request.POST['searched']
+        event_search = Event.objects.filter(name__contains=searched)
+        if event_search:
+            contains = True
+            messages.success(request, (" You searched for " + searched))
+            return render(request, 
+                'events/event_list.html', 
+                {
+                'searched':searched,
+                'event_search': event_search,
+                'contains': contains,
+                'clicked': clicked,
+                })
+        else:
+            contains = False
+            messages.success(request, (" No Event based on your search"))
+            return render(request, 
+                'events/event_list.html', 
+                {
+                'searched':searched,
+                'event_search': event_search,
+                'contains': contains,
+                'clicked': clicked,
+                })
+    else:
+        event_list = Event.objects.all().order_by('name')
+        p = Paginator(Event.objects.all().order_by('name'), 2)
+        page = request.GET.get('page')
+        events = p.get_page(page)
+        nums = "a" * events.paginator.num_pages
+        
+        return render(request, 
+            'events/event_list.html', 
+            {
+            'event_list': event_list,
+            'events': events,
+            'nums': nums,
+            })
 
 def show_event(request, event_id):
     event = Event.objects.get(pk=event_id)
@@ -90,7 +131,7 @@ def delete_event(request, event_id):
             messages.success(request, (" Event deleted successfully "))
             return redirect('list-events')
         else:
-            messages.success(request, (" You don't have permissions to delete events "))
+            messages.success(request, (" You don't have permissions to delete this event "))
             return redirect('list-events')
 
 def regist_user_event(request, event_id):

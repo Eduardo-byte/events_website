@@ -2,6 +2,7 @@
 
 {% block content %}
 {% if request.user.is_authenticated %}
+    {% if user.id == venue.owner %}
     <center>
         <h1>Update Venue ...</h1>
         <form action="" method=POST>
@@ -10,6 +11,10 @@
         <br/>
         <input type="submit" value="Update" class="btn btn-secondary">
     </center>
+    {% else %}
+        <h1>Access Denied</h1>
+        <p> Only the Venue manager can update this event</p>
+    {% endif %}
 {% else %}
     <h1>Sorry!! You must be Logged in to view this page</h1>
     <a href="{% url 'login' %}">Login Here</a>

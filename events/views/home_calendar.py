@@ -16,7 +16,7 @@ from reportlab.lib.pagesizes import letter
 
 
 def home(request, year=datetime.now().year, month=datetime.now().strftime('%B')):
-    name = "Eduardo"
+    name = request.user
 
     # convert to capitalize
     # month = month.title()

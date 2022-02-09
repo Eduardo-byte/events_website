@@ -63,16 +63,27 @@ def all_events(request):
         searched = request.POST['searched']
         event_search = Event.objects.filter(name__contains=searched)
         if event_search:
-            contains = True
-            messages.success(request, (" You searched for " + searched))
-            return render(request, 
-                'events/event_list.html', 
-                {
-                'searched':searched,
-                'event_search': event_search,
-                'contains': contains,
-                'clicked': clicked,
-                })
+            if searched == "":
+                messages.success(request, (" You search is empty "))
+                return render(request, 
+                    'events/event_list.html', 
+                    {
+                    'searched':searched,
+                    'event_search': event_search,
+                    'contains': contains,
+                    'clicked': clicked,
+                    })
+            else:
+                contains = True
+                messages.success(request, (" You searched for " + searched))
+                return render(request, 
+                    'events/event_list.html', 
+                    {
+                    'searched':searched,
+                    'event_search': event_search,
+                    'contains': contains,
+                    'clicked': clicked,
+                    })
         else:
             contains = False
             messages.success(request, (" No Event based on your search"))

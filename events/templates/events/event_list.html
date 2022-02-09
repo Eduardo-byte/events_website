@@ -28,7 +28,12 @@
                     <strong>{{event.name}}</strong>
                 </div>
                 <div class="card-body">
+                    {% if event.venue %}
                     <h5 class="card-title">Venue: <a href="{% url 'show-venue' event.venue.id %}"> {{ event.venue }}</a></h5>
+                    {% else %}
+                    <h5 class="card-title">No venue for this event</h5>
+                    {% endif %}
+                    
                     <p class="card-text">
                         <ul>
                             <li>Date: {{ event.event_date }}</li>
@@ -66,8 +71,11 @@
             <strong>{{event.name}}</strong>
         </div>
         <div class="card-body">
+            {% if event.venue %}
             <h5 class="card-title">Venue: <a href="{% url 'show-venue' event.venue.id %}"> {{ event.venue }}</a></h5>
-            <p class="card-text">
+            {% else %}
+            <h5 class="card-title">No venue for this event</h5>
+            {% endif %}            <p class="card-text">
                 <ul>
                     <li>Date: {{ event.event_date }}</li>
                     <li>Venue Website: {{ event.venue.web }}</li>

@@ -70,7 +70,7 @@ def register_user(request):
             myclub.password1 = form.cleaned_data['password1']
             myclub.password2 = form.cleaned_data['password2']
             stock = myclub.save(commit=False)
-            stock.id = 1
+            stock.id = user.id
             stock.save()
             
             return redirect('home')

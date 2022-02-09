@@ -4,9 +4,14 @@ from django import forms
 from django.forms import fields
 
 class RegisterUserForm(UserCreationForm):
-    email = forms.EmailField(widget=forms.EmailInput(attrs={'class':'form-control'}))
+    email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={'class':'form-control'}))
     first_name = forms.CharField(max_length=50,widget=forms.TextInput(attrs={'class':'form-control'}))
     last_name = forms.CharField(max_length=50,widget=forms.TextInput(attrs={'class':'form-control'}))
+    
+    def clean_email(self):
+        if User.objects.filter(email=self.cleaned_data['email']).exists():
+            raise forms.ValidationError("the given email is already registered")
+        return self.cleaned_data['email']
     
     class Meta:
         model = User

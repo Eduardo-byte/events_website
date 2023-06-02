@@ -1,20 +1,22 @@
 from django import forms  
 from django.forms import ModelForm, widgets
-from .models import Venue, Event, MyClubUser
+from .models import Venue, Event, MyClubUser, Image
 
 #Create a venue Form
 class VenueForm(ModelForm):
     class Meta:
         model = Venue
         #fields = "__all__"
-        fields = ('name', 'address', 'post_code', 'phone', 'web', 'email_address' )
+        fields = ('name', 'address', 'post_code', 'phone', 'web', 'email_address', 'venue_image' )
         labels = {
             'name': '',
             'address': '',
             'post_code': '',
             'phone': '',
             'web': '',
-            'email_address': ''
+            'email_address': '',
+            'venue image': '',
+            
         }
         widgets = {
             'name': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Venue Name'}),
@@ -56,5 +58,12 @@ class MyClubUserForm(ModelForm):
         }
         # exclude = ["password1"]
         
+class ImageForm(forms.ModelForm):
+    """Form for the image model"""
+    image = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
+
+    class Meta:
+        model = Image
+        fields = ('image',)
         
 

@@ -32,7 +32,6 @@ def my_events(request):
         messages.success(request, (" You need to be be looged in "))
         return redirect('list-events')
 
-
 def add_event(request):
     submitted = False
     user = request.user
@@ -97,7 +96,7 @@ def all_events(request):
                 })
     else:
         event_list = Event.objects.all().order_by('name')
-        p = Paginator(Event.objects.all().order_by('name'), 2)
+        p = Paginator(Event.objects.all().order_by('name'), 1)
         page = request.GET.get('page')
         events = p.get_page(page)
         nums = "a" * events.paginator.num_pages

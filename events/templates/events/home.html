@@ -8,10 +8,63 @@
         As of {{ time}}
         </br></br>
 
-        {{ cal|safe }} </br>
+        {{ cal|safe }} </br></br>
+    
+        <h3>Events This Month</h3>
+    </center>
+        {% if event_list %}
+            {% for event in event_list %}
+            <div class="row">
+                <div class="col-lg-3">   
+                </div>
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <strong>{{event.name}}</strong>
+                        </div>
+                        <div class="card-body">
+                            {% if event.venue %}
+                            <h5 class="card-title">Venue: <a href="{% url 'show-venue' event.venue.id %}"> {{ event.venue }}</a></h5>
+                            {% else %}
+                            <h5 class="card-title">No venue for this event</h5>
+                            {% endif %}            <p class="card-text">
+                                <ul>
+                                    <li>Date: {{ event.event_date }}</li>
+                                    <li>Venue Website: {{ event.venue.web }}</li>
+                                    <li>Manager: {{ event.manager }}</li>
+                                    <li>Description: {{ event.description }}</li>
+                                    <li>Attendes: </br>
+                                        {%for user in event.attendees.all%}
+                                            - {{ user }} </br>
+                                        {% endfor %}
+                                    </li> 
+                                </ul>
+                            </p> 
+                        </div>
+                        <div class="card-footer text-muted">
+                            {% if request.user.is_authenticated %}
+                            <a href=" {% url 'regist-event' event.id %} " class="btn btn-outline-secondary">regist</a>
+                                {% if user == event.manager %}
+                                    <a href=" {% url 'update-event' event.id %} " class="btn btn-outline-secondary">Update</a>
+                                    <a href=" {% url 'delete-event' event.id %} " class="btn btn-outline-danger">Delete</a>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">   
+                </div>
+            </div>
+            </br></br>
+            {% endfor %}
+        {% else %}
+            <center>
+                No events this month
+            </center>
+        {% endif %}
+    <center>
         </br></br></br></br>
         Copyright (c) {{current_year}}
-
     </center>
 
 {% endblock %}

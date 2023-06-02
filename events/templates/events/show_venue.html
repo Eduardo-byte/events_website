@@ -33,6 +33,9 @@
                                 {% endif %}
                             {% endif %}
                         </ul>
+                        {% if venue.venue_image %}
+                            <img src="{{ venue.venue_image.url }}" width="400">
+                        {% endif %}
                     </p>   
                 </div>
             </div>

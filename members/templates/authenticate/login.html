@@ -13,7 +13,7 @@
                 {% csrf_token %}               
                 <div class="form-group">
                     <label for="exampleInputEmail1">Username</label>
-                    <input type="text" class="form-control" name="username" aria-describedby="emailHelp" placeholder="Enter email">
+                    <input type="text" class="form-control" name="username" aria-describedby="emailHelp" placeholder="Enter username">
                 </div>
                 {% for error in form.username.errors %}
                     <p class="text-danger">{{ error }}</p>
